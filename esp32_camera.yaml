@@ -1,0 +1,53 @@
+substitutions:
+  device: esp32_camera
+  name: ESP32 Camera
+  update_interval: 10min
+
+esphome:
+  name: ${device}
+  platform: ESP32
+  board: esp32dev
+
+<<: !include common/common.yaml
+<<: !include common/logger.yaml
+<<: !include common/switch.yaml
+  
+esp32_camera:
+  external_clock:
+    pin: GPIO0
+    frequency: 20MHz
+  i2c_pins:
+    sda: GPIO26
+    scl: GPIO27
+  data_pins: [GPIO5, GPIO18, GPIO19, GPIO21, GPIO36, GPIO39, GPIO34, GPIO35]
+  vsync_pin: GPIO25
+  href_pin: GPIO23
+  pixel_clock_pin: GPIO22
+  power_down_pin: GPIO32
+
+  # Image settings
+  name: "Camera"
+  
+# Flashlight
+output:
+  - platform: gpio
+    pin: GPIO4
+    id: gpio_4
+light:
+  - platform: binary
+    output: gpio_4
+    name: "ESP32 Camera light"
+
+binary_sensor:
+  - !include common/binary_sensor/status.yaml
+  - platform: status
+    name: "ESP32 Camera Status"
+
+sensor:
+  - !include common/sensor/wifi-signal.yaml
+  - !include common/sensor/uptime.yaml
+  - platform: wifi_signal
+    name: "ESP32 Camera WiFi signal"
+    update_interval: 60s
+  - platform: uptime
+    name: "ESP32 Camera Uptime"

@@ -1,0 +1,15 @@
+substitutions:
+  device: verlichting_gang_zolder
+  name: Verlichting Gang Zolder
+  short_name: Gang Zolder
+  update_interval: 10min
+
+esphome:
+  name: ${device}
+  platform: ESP8266
+  board: esp01_1m
+
+<<: !include common/common.yaml
+<<: !include common/logger.yaml
+
+<<: !include common/shelly_1.yaml

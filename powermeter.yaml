@@ -1,0 +1,44 @@
+substitutions:
+  device: powermeter
+  name: Powermeter
+  update_interval: 10min
+
+esphome:
+  name: ${device}
+  platform: ESP8266
+  board: nodemcuv2
+
+<<: !include common/common.yaml
+#<<: !include common/logger.yaml
+<<: !include common/binary_sensor.yaml
+<<: !include common/switch.yaml
+
+logger:
+
+sensor:
+  - !include common/sensor/wifi-signal.yaml
+  - !include common/sensor/uptime.yaml
+  - platform: ct_clamp
+    sensor: adc_sensor
+    name: "${name} Current"
+    unit_of_measurement: "A"
+    icon: "mdi:flash-circle"
+    id: current
+    update_interval: 20s
+    filters:
+      - calibrate_linear:
+        - 0.0 -> 0.0
+        - 0.07922 -> 0.2674
+  - platform: adc
+    pin: A0
+    id: adc_sensor
+  - platform: template
+    name: "${name} Power"
+    unit_of_measurement: "W"
+    lambda: |-
+      if (id(current).state > 0){
+        return id(current).state * 227;
+      }else{
+        return 0;
+      }
+    update_interval: 20s

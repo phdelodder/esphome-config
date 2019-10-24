@@ -1,0 +1,58 @@
+substitutions:
+  device: led_slaapkamer
+  name: Led Slaapkamer
+  update_interval: 10min
+
+esphome:
+  name: ${device}
+  platform: ESP8266
+  board: esp01_1m
+
+<<: !include common/common.yaml
+<<: !include common/logger.yaml
+<<: !include common/binary_sensor.yaml
+<<: !include common/sensor.yaml
+<<: !include common/switch.yaml
+  
+output:
+  - platform: esp8266_pwm
+    id: pwm_1 
+    pin: GPIO12 #RED
+  - platform: esp8266_pwm
+    id: pwm_2
+    pin: GPIO5 #GREEN
+  - platform: esp8266_pwm
+    id: pwm_3 
+    pin: GPIO13 #BLUE
+  - platform: esp8266_pwm
+    id: pwm_4
+    pin: GPIO15 #WHITE
+    
+light:
+  - platform: rgbw
+    name: ${name}
+    red: pwm_1
+    green: pwm_2
+    blue: pwm_3
+    white: pwm_4
+    effects:
+      - random
+      - strobe
+      - flicker
+      - strobe:
+          name: Romantic
+          colors:
+            - state: True
+              brightness: 26%
+              red: 100%
+              green: 15%
+              blue: 35%
+              white: 0%
+              duration: 500ms
+            - state: True
+              brightness: 26%
+              red: 100%
+              green: 15%
+              blue: 35%
+              white: 0%
+              duration: 500ms

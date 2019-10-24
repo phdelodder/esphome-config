@@ -1,0 +1,52 @@
+substitutions:
+  device: bureau
+  name: Bureau
+  update_interval: 10min
+
+esphome:
+  name: ${device}
+  platform: ESP8266
+  board: nodemcuv2
+
+<<: !include common/common.yaml
+<<: !include common/switch.yaml
+<<: !include common/logger.yaml
+
+binary_sensor:
+  - !include common/binary_sensor/status.yaml
+  - platform: gpio
+    pin: D6
+    name: "Motion ${name}"
+    device_class: motion
+
+sensor:
+  - !include common/sensor/wifi-signal.yaml
+  - !include common/sensor/uptime.yaml
+  - platform: dht
+    pin: D5
+    temperature:
+      name: "${name} Temperature"
+    humidity:
+      name: "${name} Humidity"
+    update_interval: 60s
+    model: AM2302
+  - platform: adc
+    pin: A0
+    name: "${name} Illuminance"
+    unit_of_measurement: lux
+    filters:
+      - lambda: |-
+          return (x / 10000.0) * 2000000.0;
+          
+light:
+  - platform: fastled_clockless
+    chipset: WS2811
+    pin: D3
+    num_leds: 1
+    rgb_order: RGB
+    name: "${name} Sensor LED"
+
+output:
+  - platform: esp8266_pwm
+    id: output_component1
+    pin: D7
