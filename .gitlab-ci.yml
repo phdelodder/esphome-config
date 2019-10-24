@@ -1,0 +1,110 @@
+---
+image: docker:latest
+
+stages:
+  - preflight
+  - esphome
+
+# Generic preflight template
+.preflight: &preflight
+  stage: preflight
+  tags:
+    - preflight
+
+# Generic ESPHome template
+.esphome: &esphome
+  stage: esphome
+  variables:
+    PYTHONPATH: "/usr/src/app:$PYTHONPATH"
+  before_script:
+    - esphome dummy.yaml version
+    - cp -R ./.stubs/* ./config/esphome/
+  script:
+    - |
+      for file in $(find \
+        ./config/esphome \
+        -type f \
+        -name "*.yaml"\
+        -not -name "secrets.yaml"
+        ); do
+        esphome $file config
+      done
+  tags:
+    - config
+
+# Preflight jobs
+shellcheck:
+  <<: *preflight
+  image:
+    name: koalaman/shellcheck-alpine:stable
+    entrypoint: [""]
+  before_script:
+    - shellcheck --version
+    - apk --no-cache add grep
+    - |
+      find . -type f -print0 | \
+        xargs -0 sed -i 's:#!/usr/bin/with-contenv bash:#!/bin/bash:g'
+  script:
+    - |
+      for file in $(grep -IRl "#\!\(/usr/bin/env \|/bin/\)" --exclude-dir ".git" "${ADDON_TARGET}"); do
+        if ! shellcheck $file; then
+          export FAILED=1
+        else
+          echo "$file OK"
+        fi
+      done
+      if [ "${FAILED}" = "1" ]; then
+        exit 1
+      fi
+
+yamllint:
+  <<: *preflight
+  image: sdesbure/yamllint
+  before_script:
+    - yamllint --version
+  script:
+    - yamllint .
+
+jsonlint:
+  <<: *preflight
+  image: sahsu/docker-jsonlint
+  before_script:
+    - jsonlint --version || true
+  script:
+    - |
+      for file in $(find . -type f -name "*.json"); do
+        if ! jsonlint -q $file; then
+          export FAILED=1
+        else
+          echo "$file OK"
+        fi
+      done
+      if [ "${FAILED}" = "1" ]; then
+        exit 1
+      fi
+
+markdownlint:
+  <<: *preflight
+  image:
+    name: ruby:alpine
+    entrypoint: [""]
+  before_script:
+    - gem install mdl
+    - mdl --version
+  script:
+    - mdl --style all --warnings .
+
+# ESPHome test jobs
+esphome-latest:
+  <<: *esphome
+  image:
+    name: esphome/esphome:latest
+    entrypoint: [""]
+
+esphome-beta:
+  <<: *esphome
+  image:
+    name: esphome/esphome:beta
+    entrypoint: [""]
+  allow_failure: true
+

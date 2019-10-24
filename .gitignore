@@ -7,4 +7,5 @@
 **/lib/
 **/src/
 **/platformio.ini
-secrets.yaml
+common/secrets.yaml
+/secrets.yaml
