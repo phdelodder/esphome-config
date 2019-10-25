@@ -26,6 +26,7 @@ stages:
     - |
       for file in $(find \
         ./ \
+        -maxdepth 1 \
         -type f \
         -name "*.yaml"\
         -not -name "secrets.yaml"
