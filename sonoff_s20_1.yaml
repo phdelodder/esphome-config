@@ -14,15 +14,15 @@ esphome:
 <<: !include common/sensor.yaml
 
 binary_sensor:
-- !include common/binary_sensor/status.yaml
-- platform: gpio
-  pin:
-    number: GPIO0
-    mode: INPUT_PULLUP
-    inverted: true
-  name: "Sonoff S20 1 Button"
-  on_press:
-    - switch.toggle: relay
+  - !include common/binary_sensor/status.yaml
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "Sonoff S20 1 Button"
+    on_press:
+      - switch.toggle: relay
 
 switch:
   - !include common/switch/restart.yaml

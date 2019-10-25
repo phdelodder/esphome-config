@@ -23,7 +23,7 @@ output:
     id: pwm_2
     pin: GPIO5       # GREEN
   - platform: esp8266_pwm
-    id: pwm_3 
+    id: pwm_3
     pin: GPIO13      # BLUE
   - platform: esp8266_pwm
     id: pwm_4

@@ -20,11 +20,11 @@ binary_sensor:
   - platform: gpio
     pin:
       number: GPIO2
-      inverted: True
+      inverted: true
     name: "Weather Station Rain"
     device_class: moisture
     filters:
-      delayed_off: 900000ms #15min
+      delayed_off: 900000ms        # 15min
 
 sensor:
   - !include common/sensor/wifi-signal.yaml

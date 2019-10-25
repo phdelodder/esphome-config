@@ -60,21 +60,20 @@ light:
       - addressable_color_wipe:
 
       - addressable_lambda:
-              name: "My Simple Counter"
-              update_interval: 3000ms
-              lambda: |-
-                static int run = 0;
-                static auto matrixled = new MatrixLedDisplay();
-                matrixled->set_addr_light((light::AddressableLight *) &it);
-                matrixled->set_width(16);
-                matrixled->set_height(16);
-                matrixled->set_rotation(display::DISPLAY_ROTATION_270_DEGREES);
-                matrixled->clear();
-                matrixled->printf(matrixled->get_width()/2, matrixled->get_height()/2,
+          name: "My Simple Counter"
+          update_interval: 3000ms
+          lambda: |-
+            static int run = 0;
+            static auto matrixled = new MatrixLedDisplay();
+            matrixled->set_addr_light((light::AddressableLight *) &it);
+            matrixled->set_width(16);
+            matrixled->set_height(16);
+            matrixled->set_rotation(display::DISPLAY_ROTATION_270_DEGREES);
+            matrixled->clear();
+            matrixled->printf(matrixled->get_width()/2, matrixled->get_height()/2,
                                     id(tinyfont), COLOR_ON, TextAlign::CENTER,
                                     "%i", run % 10);
-                run++;
-
+            run++;
 
       - addressable_lambda:
           name: "My Text Diplay"
