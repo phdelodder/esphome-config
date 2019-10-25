@@ -14,7 +14,7 @@ stages:
 
 # Generic ESPHome template
 .esphome: &esphome
-  stage: esphome
+  stage: check
   variables:
     PYTHONPATH: "/usr/src/app:$PYTHONPATH"
   before_script:
