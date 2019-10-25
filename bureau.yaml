@@ -1,3 +1,4 @@
+---
 substitutions:
   device: bureau
   name: Bureau
@@ -37,7 +38,7 @@ sensor:
     filters:
       - lambda: |-
           return (x / 10000.0) * 2000000.0;
-          
+
 light:
   - platform: fastled_clockless
     chipset: WS2811

@@ -46,25 +46,25 @@ mcp23017:
 switch:
   - !include common/switch/restart.yaml
   - platform: gpio
-    pin: 
+    pin:
       mode: output
       number: GPIO32
     id: out_ads1115_1
     name: "Activate Zone 1 Soil Saturation"
   - platform: gpio
-    pin: 
+    pin:
       mode: output
       number: GPIO33
     id: out_ads1115_4
     name: "Activate Zone 4 Soil Saturation"
   - platform: gpio
-    pin: 
+    pin:
       mode: output
       number: GPIO25
     id: out_ads1115_3
     name: "Activate Zone 3 Soil Saturation"
   - platform: gpio
-    pin: 
+    pin:
       mode: output
       number: GPIO26
     id: out_ads1115_2
@@ -78,8 +78,8 @@ switch:
       number: 4
       # One of INPUT, INPUT_PULLUP or OUTPUT
       mode: OUTPUT
-      inverted: False
-    internal: True
+      inverted: false
+    internal: true
   - platform: gpio
     id: mcp23017_pin_5
     name: "Window 1 DOWN"
@@ -89,8 +89,8 @@ switch:
       number: 5
       # One of INPUT, INPUT_PULLUP or OUTPUT
       mode: OUTPUT
-      inverted: False
-    internal: True
+      inverted: false
+    internal: true
   - platform: gpio
     id: mcp23017_pin_6
     name: "Window 2 UP"
@@ -100,8 +100,8 @@ switch:
       number: 6
       # One of INPUT, INPUT_PULLUP or OUTPUT
       mode: OUTPUT
-      inverted: False
-    internal: True
+      inverted: false
+    internal: true
   - platform: gpio
     id: mcp23017_pin_7
     name: "Window 2 DOWN"
@@ -111,8 +111,8 @@ switch:
       number: 7
       # One of INPUT, INPUT_PULLUP or OUTPUT
       mode: OUTPUT
-      inverted: False
-    internal: True
+      inverted: false
+    internal: true
 
 sensor:
   - !include common/sensor/wifi-signal.yaml
@@ -136,7 +136,7 @@ sensor:
     name: "ADS1115 Channel A0-GND"
     id: ads1115_1
     update_interval: 30s
-    internal: true # Don't expose this sensor to HA, the template sensors will do that
+    internal: true        # Don't expose this sensor to HA, the template sensors will do that
     # Dry 2.734 - taken from in the air, probably should do it directly in dry soil
     # Wet 0.638 - taken from in a glass of water, probably should do it directly in saturated soil
     filters:
@@ -165,7 +165,7 @@ sensor:
     name: "ADS1115 Channel A1-GND"
     id: ads1115_2
     update_interval: 30s
-    internal: true # Don't expose this sensor to HA, the template sensors will do that
+    internal: true        # Don't expose this sensor to HA, the template sensors will do that
     # Dry 2.802 - taken from in the air, probably should do it directly in dry soil
     # Wet 1.075 - taken from in a glass of water, probably should do it directly in saturated soil
     filters:
@@ -194,7 +194,7 @@ sensor:
     name: "ADS1115 Channel A2-GND"
     id: ads1115_3
     update_interval: 30s
-    internal: true # Don't expose this sensor to HA, the template sensors will do that
+    internal: true        # Don't expose this sensor to HA, the template sensors will do that
     # Dry 2.827 - taken from in the air, probably should do it directly in dry soil
     # Wet 1.070 - taken from in a glass of water, probably should do it directly in saturated soil
     filters:
@@ -223,7 +223,7 @@ sensor:
     name: "ADS1115 Channel A3-GND"
     id: ads1115_4
     update_interval: 30s
-    internal: true # Don't expose this sensor to HA, the template sensors will do that
+    internal: true        # Don't expose this sensor to HA, the template sensors will do that
     # Dry 2.816 - taken from in the air, probably should do it directly in dry soil
     # Wet 1.077 - taken from in a glass of water, probably should do it directly in saturated soil
     filters:
@@ -246,12 +246,12 @@ sensor:
     accuracy_decimals: 0
     lambda: |-
       return id(ads1115_4).state;
-    
+
 binary_sensor:
   - !include common/binary_sensor/status.yaml
   - platform: gpio
     id: window_1_state
-    pin: 
+    pin:
       number: GPIO16
       mode: INPUT_PULLUP
     name: "Greenhouse Window 1"
@@ -261,7 +261,7 @@ binary_sensor:
     internal: true
   - platform: gpio
     id: window_2_state
-    pin: 
+    pin:
       number: GPIO4
       mode: INPUT_PULLUP
     name: "Greenhouse Window 2"

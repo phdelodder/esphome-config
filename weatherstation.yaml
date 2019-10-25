@@ -1,3 +1,4 @@
+---
 substitutions:
   device: weatherstation
   name: Weather Station
@@ -17,7 +18,7 @@ dallas:
 binary_sensor:
   - !include common/binary_sensor/status.yaml
   - platform: gpio
-    pin: 
+    pin:
       number: GPIO2
       inverted: True
     name: "Weather Station Rain"
@@ -33,18 +34,18 @@ sensor:
     name: "Weather Station Temperature"
   - platform: uptime
     name: "Weather Station Uptime"
-  #- platform: integration
-  #  name: "Total Daily Rain"
-  #  sensor: rain_meter
-  #  time_unit: d
-  #- platform: integration
-  #  name: "Total hourly Rain"
-  #  sensor: rain_meter
-  #  time_unit: h
-  #- platform: pulse_counter
-  #  pin: D6
-  #  unit_of_measurement: 'mm'
-  #  name: 'Rain Meter'
-  #  filters:
-  #    - multiply: 1.298
-  #  id: rain_meter
+  # - platform: integration
+  #   name: "Total Daily Rain"
+  #   sensor: rain_meter
+  #   time_unit: d
+  # - platform: integration
+  #   name: "Total hourly Rain"
+  #   sensor: rain_meter
+  #   time_unit: h
+  # - platform: pulse_counter
+  #   pin: D6
+  #   unit_of_measurement: 'mm'
+  #   name: 'Rain Meter'
+  #   filters:
+  #     - multiply: 1.298
+  #   id: rain_meter

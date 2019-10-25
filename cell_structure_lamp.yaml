@@ -1,3 +1,4 @@
+---
 substitutions:
   device: cell_structure_lamp
   name: Cell Structure Lamp
@@ -13,7 +14,7 @@ esphome:
 <<: !include common/binary_sensor.yaml
 <<: !include common/switch.yaml
 <<: !include common/sensor.yaml
-          
+
 light:
   - platform: neopixelbus
     variant: SK6812
@@ -22,7 +23,7 @@ light:
     type: GRBW
     name: "${name}"
     id: led
-    method: ESP8266_UART1 
+    method: ESP8266_UART1
     effects:
       - addressable_rainbow:
       - addressable_color_wipe:
@@ -31,9 +32,9 @@ light:
       - addressable_random_twinkle:
       - addressable_fireworks:
       - addressable_flicker:
-     
+
       - lambda:
-          #Source: https://github.com/Tenn0/ESPHome-RGB-Breathing-Light-Effect/tree/master
+          # Source: https://github.com/Tenn0/ESPHome-RGB-Breathing-Light-Effect/tree/master
           name: RGB Breathing
           update_interval: 0.04s
           lambda: |-
@@ -66,8 +67,8 @@ light:
             } else if (color == 11) {
               call.set_rgb(1.0, 0.0, 0.5);
             }
-            
-            if (state == 0) 
+
+            if (state == 0)
             {
              call.set_brightness(0.001);
             } else if (state == 1) {
@@ -159,4 +160,3 @@ light:
              }
              if (color == 12)
              color = 1;
-      

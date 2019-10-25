@@ -1,8 +1,9 @@
-#Sources:
-# - https://github.com/Tenn0/ESPHome-RGB-Breathing-Light-Effect/tree/master
-# - https://github.com/rnauber/ESPHomeMatrixLED
-# - https://github.com/zhujisheng/audio-reactive-led-strip
-#   --> Forked: https://github.com/phdelodder/audio-reactive-led-strip
+---
+# Sources:
+#  - https://github.com/Tenn0/ESPHome-RGB-Breathing-Light-Effect/tree/master
+#  - https://github.com/rnauber/ESPHomeMatrixLED
+#  - https://github.com/zhujisheng/audio-reactive-led-strip
+#    --> Forked: https://github.com/phdelodder/audio-reactive-led-strip
 
 substitutions:
   device: led_matrix
@@ -14,25 +15,25 @@ esphome:
   platform: ESP32
   board: esp32doit-devkit-v1
   includes:
-  - my_matrixled_display.h
-  - music_leds_esphome.h #Forked version
-  - includes/FFT.h
-  - includes/ExpFilter.h
-  - includes/VisualEffect.h
-  - includes/gaussian_filter1d.h
+    - my_matrixled_display.h
+    - music_leds_esphome.h        # Forked version
+    - includes/FFT.h
+    - includes/ExpFilter.h
+    - includes/VisualEffect.h
+    - includes/gaussian_filter1d.h
 
 <<: !include common/common.yaml
 <<: !include common/logger.yaml
 <<: !include common/sensor.yaml
 <<: !include common/binary_sensor.yaml
 <<: !include common/switch.yaml
-  
+
 font:
   - id: tinyfont
     file: "DejaVuSans-Bold.ttf"
     size: 9
     glyphs: '♡Ωäöüß!"%()+,-_.:*=°?~#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz'
-    
+
 time:
   - platform: sntp
     id: rtc
@@ -40,8 +41,8 @@ time:
 
 remote_receiver:
   pin: GPIO26
-  #dump: all
-    
+  # dump: all
+
 light:
   - platform: fastled_clockless
     chipset: WS2812B
@@ -50,7 +51,7 @@ light:
     rgb_order: GRB
     name: "Matrix Led Speelkamer Light"
     id: mylight
-    #color_correct: [40%, 40%, 40%]
+    # color_correct: [40%, 40%, 40%]
     effects:
       - addressable_random_twinkle:
       - addressable_fireworks:
@@ -67,13 +68,13 @@ light:
                 matrixled->set_addr_light((light::AddressableLight *) &it);
                 matrixled->set_width(16);
                 matrixled->set_height(16);
-                matrixled->set_rotation(display::DISPLAY_ROTATION_270_DEGREES); 
+                matrixled->set_rotation(display::DISPLAY_ROTATION_270_DEGREES);
                 matrixled->clear();
                 matrixled->printf(matrixled->get_width()/2, matrixled->get_height()/2,
                                     id(tinyfont), COLOR_ON, TextAlign::CENTER,
-                                    "%i", run % 10);            
+                                    "%i", run % 10);
                 run++;
-   
+
 
       - addressable_lambda:
           name: "My Text Diplay"
@@ -81,23 +82,23 @@ light:
           lambda: |-
             static auto text=" 3 2 1 0 #ESPHOME♡♡♡♡Ω      ";
             static uint16_t byte_pos = 0;
-            char current_char[16]; 
+            char current_char[16];
             static auto matrixled = new MatrixLedDisplay();
             matrixled->set_addr_light((light::AddressableLight *) &it);
             matrixled->set_width(16);
             matrixled->set_height(16);
-            matrixled->set_rotation(display::DISPLAY_ROTATION_270_DEGREES); 
-        
-            //matrixled->set_fg_color(&current_color); 
-            matrixled->set_fg_color(light::ESPColor(0xff, 0xff, 0xff)); 
-            matrixled->set_bg_color(light::ESPColor(0x80, 0x00, 0x00)); 
-            matrixled->set_fg_color(light::ESPColor((byte_pos * 10) % 255 , 0xff, 0xff)); 
+            matrixled->set_rotation(display::DISPLAY_ROTATION_270_DEGREES);
+
+            //matrixled->set_fg_color(&current_color);
+            matrixled->set_fg_color(light::ESPColor(0xff, 0xff, 0xff));
+            matrixled->set_bg_color(light::ESPColor(0x80, 0x00, 0x00));
+            matrixled->set_fg_color(light::ESPColor((byte_pos * 10) % 255 , 0xff, 0xff));
             matrixled->clear();
             byte_pos = get_next_char(text, id(tinyfont), byte_pos, current_char, sizeof(current_char));
-            ESP_LOGD("main", "Displaying \"%s\"", current_char);             
-            matrixled->printf( matrixled->get_width()/2, 
-                 matrixled->get_height()/2, id(tinyfont), COLOR_ON, TextAlign::CENTER, current_char);          
-      
+            ESP_LOGD("main", "Displaying \"%s\"", current_char);
+            matrixled->printf( matrixled->get_width()/2,
+                 matrixled->get_height()/2, id(tinyfont), COLOR_ON, TextAlign::CENTER, current_char);
+
       - addressable_lambda:
           name: "Clock"
           update_interval: 500ms
@@ -106,8 +107,8 @@ light:
             matrixled->set_addr_light((light::AddressableLight *) &it);
             matrixled->set_width(16);
             matrixled->set_height(16);
-            matrixled->set_rotation(display::DISPLAY_ROTATION_270_DEGREES); 
-            matrixled->set_bg_color(light::ESPColor(0x80, 0x00, 0x00)); 
+            matrixled->set_rotation(display::DISPLAY_ROTATION_270_DEGREES);
+            matrixled->set_bg_color(light::ESPColor(0x80, 0x00, 0x00));
             matrixled->clear();
             float halfheight = (matrixled->get_height() - 0.1) / 2;
             float halfwidth = (matrixled->get_width() - 0.1) / 2;
@@ -117,8 +118,8 @@ light:
             if ((id(rtc).now()).is_valid()){
                 minutes = id(rtc).now().minute;
                 hours = id(rtc).now().hour;
-                
-                //fast forward...                
+
+                //fast forward...
                 //minutes = int(id(rtc).now().time * 20.) % 60;
                 //hours = int(id(rtc).now().time * 20. / 60.) % 12;
             };
@@ -127,27 +128,27 @@ light:
                 if (i==0)
                     matrixled->set_fg_color(light::ESPColor(0x00, 0x00, 0xff));
                 else
-                    matrixled->set_fg_color(light::ESPColor(0x00, 0xff, 0x00)); 
+                    matrixled->set_fg_color(light::ESPColor(0x00, 0xff, 0x00));
                 matrixled->draw_pixel_at(halfwidth - sin(-theta) * halfwidth, halfheight - cos(-theta) * halfheight, COLOR_ON);
             }
-            if (minutes >= 0) {                
-                matrixled->set_fg_color(light::ESPColor(0xff, 0xff, 0xff)); 
+            if (minutes >= 0) {
+                matrixled->set_fg_color(light::ESPColor(0xff, 0xff, 0xff));
                 theta =  minutes * 2 * 3.141 / 60.0;
                 matrixled->line(halfwidth, halfheight, halfwidth - sin(-theta) * halfwidth, halfheight - cos(-theta) * halfheight, COLOR_ON);
             }
-            if (hours >= 0) {  
-                matrixled->set_fg_color(light::ESPColor(0xff, 0x00, 0x00)); 
+            if (hours >= 0) {
+                matrixled->set_fg_color(light::ESPColor(0xff, 0x00, 0x00));
                 theta = (hours + 0.5)/ 12.0 * 2 * 3.141 ;
                 matrixled->line(halfwidth, halfheight, halfwidth - sin(-theta) * halfwidth * 0.7, halfheight - cos(-theta) * halfheight  * 0.7, COLOR_ON);
             }
-    
- 
+
+
       - addressable_lambda:
           name: "Digital Clock Marquee"
           update_interval: 200ms
           lambda: |-
-            static char text[16] = "??:??";    
-            static uint16_t run = 0; 
+            static char text[16] = "??:??";
+            static uint16_t run = 0;
             static int width;
             static float charwidth = 10;
             static int x_offset;
@@ -157,41 +158,41 @@ light:
             matrixled->set_addr_light((light::AddressableLight *) &it);
             matrixled->set_width(16);
             matrixled->set_height(16);
-            matrixled->set_rotation(display::DISPLAY_ROTATION_270_DEGREES); 
-          
-            //matrixled->set_fg_color(current_color); 
-            matrixled->set_fg_color(light::ESPColor(0xff, 0xff, 0xff, 0)); 
-            matrixled->set_bg_color(light::ESPColor(0xff, 0x00, 0x00, 0)); 
- 
+            matrixled->set_rotation(display::DISPLAY_ROTATION_270_DEGREES);
+
+            //matrixled->set_fg_color(current_color);
+            matrixled->set_fg_color(light::ESPColor(0xff, 0xff, 0xff, 0));
+            matrixled->set_bg_color(light::ESPColor(0xff, 0x00, 0x00, 0));
+
             matrixled->clear();
-            
+
             if (((run % 32) == 0) && (id(rtc).now()).is_valid()){
                 id(rtc).now().strftime(text, sizeof(text), "%M %H:%M %H");
                 id(tinyfont)->measure(text, &width, &x_offset, &baseline, &height); 	            charwidth = float(width) / strlen(text);
                 ESP_LOGD("main", "Displaying \"%s\"", text);
             };
-            matrixled->printf(matrixled->get_width()/2 + 3 * charwidth - run % int(6 * charwidth), matrixled->get_height()/2, id(tinyfont), COLOR_ON, TextAlign::CENTER, text);      
-          
+            matrixled->printf(matrixled->get_width()/2 + 3 * charwidth - run % int(6 * charwidth), matrixled->get_height()/2, id(tinyfont), COLOR_ON, TextAlign::CENTER, text);
+
             run++;
-          
+
       - addressable_lambda:
           name: Scroll with Music
           update_interval: 0s
           lambda: |-
             music_leds.ShowFrame(MODE_SCROLL, &it);
-          
+
       - addressable_lambda:
           name: Energy with Music
           update_interval: 0s
           lambda: |-
             music_leds.ShowFrame(MODE_ENERGY, &it);
-            
+
       - addressable_lambda:
           name: Spectrum with Music
           update_interval: 0s
           lambda: |-
             music_leds.ShowFrame(MODE_SPECTRUM, &it);
-            
+
       - lambda:
           name: RGB Breathing
           update_interval: 0.04s
@@ -225,8 +226,8 @@ light:
             } else if (color == 11) {
               call.set_rgb(1.0, 0.0, 0.5);
             }
-            
-            if (state == 0) 
+
+            if (state == 0)
             {
              call.set_brightness(0.001);
             } else if (state == 1) {
@@ -318,6 +319,5 @@ light:
              }
              if (color == 12)
              color = 1;
-      
- 
+
 display:

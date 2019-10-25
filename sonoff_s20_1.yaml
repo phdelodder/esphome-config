@@ -1,3 +1,4 @@
+---
 substitutions:
   device: sonoff_s20_1
   name: "Sonoff S20 1"
@@ -7,7 +8,7 @@ esphome:
   name: sonoff_s20_1
   platform: ESP8266
   board: esp01_1m
-  
+
 <<: !include common/common.yaml
 <<: !include common/logger.yaml
 <<: !include common/sensor.yaml
@@ -18,25 +19,25 @@ binary_sensor:
   pin:
     number: GPIO0
     mode: INPUT_PULLUP
-    inverted: True
+    inverted: true
   name: "Sonoff S20 1 Button"
   on_press:
     - switch.toggle: relay
 
 switch:
-- !include common/switch/restart.yaml
-- platform: gpio
-  name: "Sonoff S20 1 Relay"
-  pin: GPIO12
-  id: relay
+  - !include common/switch/restart.yaml
+  - platform: gpio
+    name: "Sonoff S20 1 Relay"
+    pin: GPIO12
+    id: relay
 
 output:
-- platform: esp8266_pwm
-  id: s20_green_led
-  pin: GPIO13
-  inverted: True
+  - platform: esp8266_pwm
+    id: s20_green_led
+    pin: GPIO13
+    inverted: true
 
 light:
-- platform: monochromatic
-  name: "Sonoff S20 1 Green LED"
-  output: s20_green_led
+  - platform: monochromatic
+    name: "Sonoff S20 1 Green LED"
+    output: s20_green_led

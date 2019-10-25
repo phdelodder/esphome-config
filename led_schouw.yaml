@@ -1,9 +1,10 @@
+---
 substitutions:
   device: led_schouw
   name: Led Schouw
   alt_name: Living
   update_interval: 10min
-  
+
 esphome:
   name: ${device}
   platform: ESP8266
@@ -12,9 +13,9 @@ esphome:
 <<: !include common/common.yaml
 <<: !include common/logger.yaml
 <<: !include common/switch.yaml
-    
-#status_led:
-#  pin: D4
+
+# status_led:
+#   pin: D4
 
 binary_sensor:
   - !include common/binary_sensor/status.yaml
@@ -54,16 +55,16 @@ light:
       - strobe:
           name: Warm White
           colors:
-            - state: True
+            - state: true
               brightness: 80%
               red: 100%
               green: 78%
               blue: 14%
               duration: 2s
-            - state: True
+            - state: true
               brightness: 80%
               red: 100%
               green: 78%
               blue: 14%
               duration: 2s
-      - random:
+            - random:

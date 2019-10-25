@@ -1,3 +1,4 @@
+---
 substitutions:
   device: esp32_camera
   name: ESP32 Camera
@@ -11,7 +12,7 @@ esphome:
 <<: !include common/common.yaml
 <<: !include common/logger.yaml
 <<: !include common/switch.yaml
-  
+
 esp32_camera:
   external_clock:
     pin: GPIO0
@@ -27,7 +28,7 @@ esp32_camera:
 
   # Image settings
   name: "Camera"
-  
+
 # Flashlight
 output:
   - platform: gpio

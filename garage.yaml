@@ -1,3 +1,4 @@
+---
 substitutions:
   device: garage
   name: Garage
@@ -24,10 +25,10 @@ wifi:
 <<: !include common/logger.yaml
 <<: !include common/binary_sensor.yaml
 <<: !include common/switch.yaml
-  
+
 dallas:
   - pin: D5
-    
+
 sensor:
   - !include common/sensor/wifi-signal.yaml
   - !include common/sensor/uptime.yaml

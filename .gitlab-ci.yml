@@ -107,4 +107,3 @@ esphome-beta:
     name: esphome/esphome:beta
     entrypoint: [""]
   allow_failure: true
-

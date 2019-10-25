@@ -12,14 +12,14 @@ light:
     name: "${short_name}"
     output: gpio_4
     id: lightid
-    
+
 binary_sensor:
   - !include binary_sensor/status.yaml
   - platform: gpio
     pin:
       number: GPIO5
-      #mode: INPUT_PULLUP
-      #inverted: True
+      # mode: INPUT_PULLUP
+      # inverted: True
     name: "Switch ${name}"
     on_state:
       then:

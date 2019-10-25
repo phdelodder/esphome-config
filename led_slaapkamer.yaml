@@ -1,3 +1,4 @@
+---
 substitutions:
   device: led_slaapkamer
   name: Led Slaapkamer
@@ -13,21 +14,21 @@ esphome:
 <<: !include common/binary_sensor.yaml
 <<: !include common/sensor.yaml
 <<: !include common/switch.yaml
-  
+
 output:
   - platform: esp8266_pwm
-    id: pwm_1 
-    pin: GPIO12 #RED
+    id: pwm_1
+    pin: GPIO12      # RED
   - platform: esp8266_pwm
     id: pwm_2
-    pin: GPIO5 #GREEN
+    pin: GPIO5       # GREEN
   - platform: esp8266_pwm
     id: pwm_3 
-    pin: GPIO13 #BLUE
+    pin: GPIO13      # BLUE
   - platform: esp8266_pwm
     id: pwm_4
-    pin: GPIO15 #WHITE
-    
+    pin: GPIO15      # WHITE
+
 light:
   - platform: rgbw
     name: ${name}
@@ -42,14 +43,14 @@ light:
       - strobe:
           name: Romantic
           colors:
-            - state: True
+            - state: true
               brightness: 26%
               red: 100%
               green: 15%
               blue: 35%
               white: 0%
               duration: 500ms
-            - state: True
+            - state: true
               brightness: 26%
               red: 100%
               green: 15%
