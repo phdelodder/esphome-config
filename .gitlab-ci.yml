@@ -6,6 +6,10 @@ stages:
   - check
   - deploy
 
+variables:
+  GIT_STRATEGY: clone
+  GIT_SUBMODULE_STRATEGY: recursive
+
 # Generic preflight template
 .preflight: &preflight
   stage: preflight
