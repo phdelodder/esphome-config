@@ -1,0 +1,2 @@
+secrets.yaml filter=git-crypt diff=git-crypt
+common/secrets.yaml filter=git-crypt diff=git-crypt

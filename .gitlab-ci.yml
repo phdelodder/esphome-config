@@ -3,7 +3,8 @@ image: docker:latest
 
 stages:
   - preflight
-  - esphome
+  - check
+  - deploy
 
 # Generic preflight template
 .preflight: &preflight
@@ -36,6 +37,27 @@ stages:
       done
   tags:
     - config
+
+# Generic deployment template
+.esphome-deploy: &esphome-deploy
+  stage: deploy
+  variables:
+    PYTHONPATH: "/usr/src/app:$PYTHONPATH"
+  image:
+    name: esphome/esphome:latest
+    entrypoint: [""]
+  before_script:
+    - apt update && apt install -y git-crypt openssl
+    - |
+      openssl enc -aes-256-cbc -pbkdf2 -d -in git-crypt.key.enc -out \
+          git-crypt.key -k $OPENSSL_PASSPHRASE
+    - git-crypt unlock git-crypt.key
+    - esphome dummy.yaml version
+  after_script:
+    - rm -f git-crypt.key
+  retry: 2
+  tags:
+    - esphome
 
 # Preflight jobs
 shellcheck:
@@ -112,3 +134,16 @@ esphome-beta:
     name: esphome/esphome:beta
     entrypoint: [""]
   allow_failure: true
+
+# Deployment jobs
+led_bureau:
+  <<: *esphome-deploy
+  script:
+    - esphome led_bureau.yaml run --no-logs
+  only:
+    refs:
+      - master
+    changes:
+      - led_bureay.yaml
+      - secrets.yaml
+      - common/*.{yaml}
