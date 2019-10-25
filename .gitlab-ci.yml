@@ -18,7 +18,8 @@ stages:
     PYTHONPATH: "/usr/src/app:$PYTHONPATH"
   before_script:
     - esphome dummy.yaml version
-    - cp -R ./.stubs/* ./
+    - mkdir -p /config/esphome
+    - cp -R ./.stubs/* ./config/esphome
   script:
     - |
       for file in $(find \
