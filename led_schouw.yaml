@@ -67,4 +67,4 @@ light:
               green: 78%
               blue: 14%
               duration: 2s
-            - random:
+      - random:
