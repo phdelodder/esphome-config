@@ -18,7 +18,10 @@ stages:
     PYTHONPATH: "/usr/src/app:$PYTHONPATH"
   before_script:
     - esphome dummy.yaml version
+    # secrets is used in common
     - cp ./.stubs/secrets.yaml ./common/
+    # secrets is used in root
+    - cp ./.stubs/secrets.yaml ./
   script:
     - |
       for file in $(find \
