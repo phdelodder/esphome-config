@@ -89,6 +89,8 @@ yamllint:
   image: sdesbure/yamllint
   before_script:
     - yamllint --version
+    - cp ./.stub/secrets.yaml ./
+    - cp ./.stub/secrets.yaml ./common/
   script:
     - yamllint .
 
