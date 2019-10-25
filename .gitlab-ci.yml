@@ -18,12 +18,11 @@ stages:
     PYTHONPATH: "/usr/src/app:$PYTHONPATH"
   before_script:
     - esphome dummy.yaml version
-    - mkdir -p ./config/esphome
-    - cp -R ./.stubs/* ./config/esphome
+    - cp -R ./.stubs/* ./
   script:
     - |
       for file in $(find \
-        ./config/esphome \
+        ./ \
         -type f \
         -name "*.yaml"\
         -not -name "secrets.yaml"
