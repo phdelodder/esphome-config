@@ -7,3 +7,4 @@
 **/lib/
 **/src/
 **/platformio.ini
+**/partitions.csv
