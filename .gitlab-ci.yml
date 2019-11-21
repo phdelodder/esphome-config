@@ -155,3 +155,15 @@ led_bureau:
       - led_bureay.yaml
       - secrets.yaml
       - common/*.{yaml}
+
+led_slaapkamer:
+  <<: *esphome-deploy
+  script:
+    - esphome led_slaapkamer.yaml run --no-logs
+  only:
+    refs:
+      - master
+    changes:
+      - led_slaapkamer.yaml
+      - secrets.yaml
+      - common/*.{yaml}
