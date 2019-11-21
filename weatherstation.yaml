@@ -11,6 +11,7 @@ esphome:
 
 <<: !include common/common.yaml
 <<: !include common/logger.yaml
+<<: !include common/switch.yaml
 
 dallas:
   - pin: GPIO14

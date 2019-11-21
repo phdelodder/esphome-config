@@ -156,6 +156,18 @@ led_bureau:
       - secrets.yaml
       - common/*.{yaml}
 
+weatherstation:
+  <<: *esphome-deploy
+  script:
+    - esphome weatherstation.yaml run --no-logs
+  only:
+    refs:
+      - master
+    changes:
+      - weatherstation.yaml
+      - secrets.yaml
+      - common/*.{yaml}
+
 led_slaapkamer:
   <<: *esphome-deploy
   script:
