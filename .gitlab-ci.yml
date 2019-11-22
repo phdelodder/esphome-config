@@ -179,3 +179,15 @@ led_slaapkamer:
       - led_slaapkamer.yaml
       - secrets.yaml
       - common/*.{yaml}
+
+led_mini_kerstboom:
+  <<: *esphome-deploy
+  script:
+    - esphome led_mini_kerstboom.yaml run --no-logs
+  only:
+    refs:
+      - master
+    changes:
+      - led_mini_kerstboom.yaml
+      - secrets.yaml
+      - common/*.{yaml}
