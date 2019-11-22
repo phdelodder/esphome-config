@@ -1,0 +1,38 @@
+---
+substitutions:
+  device: led_mini_kerstboom
+  name: Led Mini Kerstboom
+  update_interval: 10min
+
+esphome:
+  name: ${device}
+  platform: ESP8266
+  board: nodemcuv2
+
+<<: !include common/common.yaml
+<<: !include common/logger.yaml
+<<: !include common/sensor.yaml
+<<: !include common/switch.yaml
+
+binary_sensor:
+  - !include common/binary_sensor/status.yaml
+  - platform: gpio
+    pin:
+      number: D4
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "${name} Button"
+    on_press:
+      - light.toggle: lightid
+
+output:
+  - platform: esp8266_pwm
+    id: white_led
+    pin: GPIO14
+    frequency: 880Hz
+
+light:
+  - platform: monochromatic
+    name: "${name} LED"
+    output: white_led
+    id: lightid
