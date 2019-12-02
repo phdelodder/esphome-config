@@ -36,3 +36,8 @@ light:
     name: "${name} LED"
     output: white_led
     id: lightid
+    effects:
+      - flicker:
+          name: Candle_Flicker
+          alpha: 90%
+          intensity: 2.5%
