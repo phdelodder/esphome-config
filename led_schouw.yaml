@@ -51,6 +51,10 @@ light:
       - addressable_fireworks:
       - addressable_scan:
       - flicker:
+      - flicker:
+          name: Candle_Flicker
+          alpha: 90%
+          intensity: 2.5%
       - strobe:
       - strobe:
           name: Warm White
