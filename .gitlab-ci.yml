@@ -191,3 +191,15 @@ led_mini_kerstboom:
       - led_mini_kerstboom.yaml
       - secrets.yaml
       - common/*.{yaml}
+
+led_schouw:
+  <<: *esphome-deploy
+  script:
+    - esphome led_schouw.yaml run --no-logs
+  only:
+    refs:
+      - master
+    changes:
+      - led_schouw.yaml
+      - secrets.yaml
+      - common/*.{yaml}
