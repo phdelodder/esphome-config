@@ -14,6 +14,41 @@ esphome:
       - switch.turn_on: out_ads1115_3
       - switch.turn_on: out_ads1115_2
       - switch.turn_on: out_ads1115_1
+      
+globals:
+  - id: zone1_dry
+    type: float
+    restore_value: no
+    initial_value: '1.746187'
+  - id: zone1_wet
+    type: float
+    restore_value: no
+    initial_value: '0.638'
+  - id: zone2_dry
+    type: float
+    restore_value: no
+    initial_value: '2.085000'
+  - id: zone2_wet
+    type: float
+    restore_value: no
+    initial_value: '1.075'
+  - id: zone3_dry
+    type: float
+    restore_value: no
+    initial_value: '2.3'
+  - id: zone3_wet
+    type: float
+    restore_value: no
+    initial_value: '1.070'
+  - id: zone4_dry
+    type: float
+    restore_value: no
+    initial_value: '2.055562'
+  - id: zone4_wet
+    type: float
+    restore_value: no
+    initial_value: '1.077'
+
 
 wifi:
   ssid: !secret wifi_ssid
@@ -70,6 +105,50 @@ switch:
       number: GPIO26
     id: out_ads1115_2
     name: "Activate Zone 2 Soil Saturation"
+  - platform: gpio
+    id: mcp23017_pin_0
+    name: "Greenhouse Valve 1"
+    icon: mdi:water-pump
+    pin:
+      mcp23017: mcp23017_hub
+      # Use pin number 0
+      number: 0
+      # One of INPUT, INPUT_PULLUP or OUTPUT
+      mode: OUTPUT
+      inverted: false
+  - platform: gpio
+    id: mcp23017_pin_1
+    name: "Greenhouse Valve 2"
+    icon: mdi:water-pump
+    pin:
+      mcp23017: mcp23017_hub
+      # Use pin number 1
+      number: 1
+      # One of INPUT, INPUT_PULLUP or OUTPUT
+      mode: OUTPUT
+      inverted: false
+  - platform: gpio
+    id: mcp23017_pin_2
+    name: "Greenhouse Valve 3"
+    icon: mdi:water-pump
+    pin:
+      mcp23017: mcp23017_hub
+      # Use pin number 2
+      number: 2
+      # One of INPUT, INPUT_PULLUP or OUTPUT
+      mode: OUTPUT
+      inverted: false
+  - platform: gpio
+    id: mcp23017_pin_3
+    name: "Greenhouse Valve 4"
+    icon: mdi:water-pump
+    pin:
+      mcp23017: mcp23017_hub
+      # Use pin number 3
+      number: 3
+      # One of INPUT, INPUT_PULLUP or OUTPUT
+      mode: OUTPUT
+      inverted: false
   - platform: gpio
     id: mcp23017_pin_4
     name: "Window 1 UP"
@@ -136,7 +215,7 @@ sensor:
     gain: 6.144
     name: "ADS1115 Channel A0-GND"
     id: ads1115_1
-    update_interval: 30s
+    update_interval: never
     internal: true        # Don't expose this sensor to HA, the template sensors will do that
     # Dry 2.734 - taken from in the air, probably should do it directly in dry soil
     # Wet 0.638 - taken from in a glass of water, probably should do it directly in saturated soil
@@ -145,12 +224,12 @@ sensor:
           alpha: 0.1
           send_every: 12
       - lambda: |-
-          if (x > 2.3) { 				// if over 2.734 volts, we are dry
+          if (x > id(zone1_dry)) { 				// if over 1.748062 volts, we are dry
             return 0;
-          } else if (x < 0.638) { 			// if under 0.638 volts, we are fully saturated
+          } else if (x < id(zone1_wet)) { 			// if under 0.638 volts, we are fully saturated
             return 100;
           } else {
-            return (2.3-x) / (2.3-0.638) * 100.0; 	// use a linear fit for any values in between
+            return (id(zone1_dry)-x) / (id(zone1_dry)-id(zone1_wet)) * 100.0; 	// use a linear fit for any values in between
           }
   - platform: template
     name: "Greenhouse Zone 1 Soil Saturation"
@@ -165,7 +244,7 @@ sensor:
     gain: 6.144
     name: "ADS1115 Channel A1-GND"
     id: ads1115_2
-    update_interval: 30s
+    update_interval: never
     internal: true        # Don't expose this sensor to HA, the template sensors will do that
     # Dry 2.802 - taken from in the air, probably should do it directly in dry soil
     # Wet 1.075 - taken from in a glass of water, probably should do it directly in saturated soil
@@ -174,12 +253,12 @@ sensor:
           alpha: 0.1
           send_every: 12
       - lambda: |-
-          if (x > 2.3) { 				// if over 2.802 volts, we are dry
+          if (x > id(zone2_dry)) { 				// if over X volts, we are dry
             return 0;
-          } else if (x < 1.075) { 			// if under 1.075 volts, we are fully saturated
+          } else if (x < id(zone2_wet)) { 			// if under Y volts, we are fully saturated
             return 100;
           } else {
-            return (2.3-x) / (2.3-1.075) * 100.0; 	// use a linear fit for any values in between
+            return (id(zone2_dry)-x) / (id(zone2_dry)-id(zone2_wet)) * 100.0; 	// use a linear fit for any values in between
           }
   - platform: template
     name: "Greenhouse Zone 2 Soil Saturation"
@@ -194,7 +273,7 @@ sensor:
     gain: 6.144
     name: "ADS1115 Channel A2-GND"
     id: ads1115_3
-    update_interval: 30s
+    update_interval: never
     internal: true        # Don't expose this sensor to HA, the template sensors will do that
     # Dry 2.827 - taken from in the air, probably should do it directly in dry soil
     # Wet 1.070 - taken from in a glass of water, probably should do it directly in saturated soil
@@ -203,12 +282,12 @@ sensor:
           alpha: 0.1
           send_every: 12
       - lambda: |-
-          if (x > 2.3) { 				// if over 2.827 volts, we are dry
+          if (x > id(zone3_dry)) { 				// if over X volts, we are dry
             return 0;
-          } else if (x < 1.070) { 			// if under 1.070 volts, we are fully saturated
+          } else if (x < id(zone3_wet)) { 			// if under X volts, we are fully saturated
             return 100;
           } else {
-            return (2.3-x) / (2.3-1.070) * 100.0; 	// use a linear fit for any values in between
+            return (id(zone3_dry)-x) / (id(zone3_dry)-id(zone3_wet)) * 100.0; 	// use a linear fit for any values in between
           }
   - platform: template
     name: "Greenhouse Zone 3 Soil Saturation"
@@ -223,7 +302,7 @@ sensor:
     gain: 6.144
     name: "ADS1115 Channel A3-GND"
     id: ads1115_4
-    update_interval: 30s
+    update_interval: never
     internal: true        # Don't expose this sensor to HA, the template sensors will do that
     # Dry 2.816 - taken from in the air, probably should do it directly in dry soil
     # Wet 1.077 - taken from in a glass of water, probably should do it directly in saturated soil
@@ -232,12 +311,12 @@ sensor:
           alpha: 0.1
           send_every: 12
       - lambda: |-
-          if (x > 2.3) { 				// if over 2.816 volts, we are dry
+          if (x > id(zone4_dry)) { 				// if over X volts, we are dry
             return 0;
-          } else if (x < 1.077) { 			// if under 1.077 volts, we are fully saturated
+          } else if (x < id(zone4_wet)) { 			// if under X volts, we are fully saturated
             return 100;
           } else {
-            return (2.3-x) / (2.3-1.077) * 100.0; 	// use a linear fit for any values in between
+            return (id(zone4_dry)-x) / (id(zone4_dry)-id(zone4_wet)) * 100.0; 	// use a linear fit for any values in between
           }
   - platform: template
     name: "Greenhouse Zone 4 Soil Saturation"
@@ -257,7 +336,7 @@ binary_sensor:
       mode: INPUT_PULLUP
     name: "Greenhouse Window 1"
     filters:
-      - delayed_on: 10ms
+      - delayed_on: 100ms
     device_class: "window"
     internal: true
   - platform: gpio
@@ -267,7 +346,7 @@ binary_sensor:
       mode: INPUT_PULLUP
     name: "Greenhouse Window 2"
     filters:
-      - delayed_on: 10ms
+      - delayed_on: 100ms
     device_class: "window"
     internal: true
 
@@ -324,3 +403,20 @@ cover:
     stop_action:
       - switch.turn_off: mcp23017_pin_6
       - switch.turn_off: mcp23017_pin_7
+
+interval:
+  - interval: 1min
+    then:
+      - switch.turn_on: out_ads1115_4
+      - switch.turn_on: out_ads1115_3
+      - switch.turn_on: out_ads1115_2
+      - switch.turn_on: out_ads1115_1
+      - delay: 10s
+      - component.update: ads1115_4
+      - switch.turn_off: out_ads1115_4
+      - component.update: ads1115_3
+      - switch.turn_off: out_ads1115_3
+      - component.update: ads1115_2
+      - switch.turn_off: out_ads1115_2
+      - component.update: ads1115_1
+      - switch.turn_off: out_ads1115_1
