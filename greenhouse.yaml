@@ -8,56 +8,18 @@ esphome:
   name: ${device}
   platform: ESP32
   board: esp32doit-devkit-v1
-  on_boot:
-    then:
-      - switch.turn_on: out_ads1115_4
-      - switch.turn_on: out_ads1115_3
-      - switch.turn_on: out_ads1115_2
-      - switch.turn_on: out_ads1115_1
-      
-globals:
-  - id: zone1_dry
-    type: float
-    restore_value: no
-    initial_value: '1.746187'
-  - id: zone1_wet
-    type: float
-    restore_value: no
-    initial_value: '0.638'
-  - id: zone2_dry
-    type: float
-    restore_value: no
-    initial_value: '2.085000'
-  - id: zone2_wet
-    type: float
-    restore_value: no
-    initial_value: '1.075'
-  - id: zone3_dry
-    type: float
-    restore_value: no
-    initial_value: '2.3'
-  - id: zone3_wet
-    type: float
-    restore_value: no
-    initial_value: '1.070'
-  - id: zone4_dry
-    type: float
-    restore_value: no
-    initial_value: '2.055562'
-  - id: zone4_wet
-    type: float
-    restore_value: no
-    initial_value: '1.077'
-
 
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
   domain: !secret lan_domain
+  power_save_mode: none
   manual_ip:
     static_ip: 192.168.0.66
     gateway: 192.168.0.1
     subnet: 255.255.255.0
+    
+esp32_ble_tracker:
 
 <<: !include common/api.yaml
 <<: !include common/ota.yaml
@@ -81,30 +43,6 @@ mcp23017:
 
 switch:
   - !include common/switch/restart.yaml
-  - platform: gpio
-    pin:
-      mode: output
-      number: GPIO32
-    id: out_ads1115_1
-    name: "Activate Zone 1 Soil Saturation"
-  - platform: gpio
-    pin:
-      mode: output
-      number: GPIO33
-    id: out_ads1115_4
-    name: "Activate Zone 4 Soil Saturation"
-  - platform: gpio
-    pin:
-      mode: output
-      number: GPIO25
-    id: out_ads1115_3
-    name: "Activate Zone 3 Soil Saturation"
-  - platform: gpio
-    pin:
-      mode: output
-      number: GPIO26
-    id: out_ads1115_2
-    name: "Activate Zone 2 Soil Saturation"
   - platform: gpio
     id: mcp23017_pin_0
     name: "Greenhouse Valve 1"
@@ -210,143 +148,43 @@ sensor:
       id: bme280_humidity
     address: 0x76
     update_interval: 60s
-  - platform: ads1115
-    multiplexer: 'A0_GND'
-    gain: 6.144
-    name: "ADS1115 Channel A0-GND"
-    id: ads1115_1
-    update_interval: never
-    internal: true        # Don't expose this sensor to HA, the template sensors will do that
-    # Dry 2.734 - taken from in the air, probably should do it directly in dry soil
-    # Wet 0.638 - taken from in a glass of water, probably should do it directly in saturated soil
-    filters:
-      - exponential_moving_average:
-          alpha: 0.1
-          send_every: 12
-      - lambda: |-
-          if (x > id(zone1_dry)) { 				// if over 1.748062 volts, we are dry
-            return 0;
-          } else if (x < id(zone1_wet)) { 			// if under 0.638 volts, we are fully saturated
-            return 100;
-          } else {
-            return (id(zone1_dry)-x) / (id(zone1_dry)-id(zone1_wet)) * 100.0; 	// use a linear fit for any values in between
-          }
-  - platform: template
-    name: "Greenhouse Zone 1 Soil Saturation"
-    id: zone1saturation
-    unit_of_measurement: "%"
-    icon: "mdi:water-percent"
-    accuracy_decimals: 0
-    lambda: |-
-      return id(ads1115_1).state;
-  - platform: ads1115
-    multiplexer: 'A1_GND'
-    gain: 6.144
-    name: "ADS1115 Channel A1-GND"
-    id: ads1115_2
-    update_interval: never
-    internal: true        # Don't expose this sensor to HA, the template sensors will do that
-    # Dry 2.802 - taken from in the air, probably should do it directly in dry soil
-    # Wet 1.075 - taken from in a glass of water, probably should do it directly in saturated soil
-    filters:
-      - exponential_moving_average:
-          alpha: 0.1
-          send_every: 12
-      - lambda: |-
-          if (x > id(zone2_dry)) { 				// if over X volts, we are dry
-            return 0;
-          } else if (x < id(zone2_wet)) { 			// if under Y volts, we are fully saturated
-            return 100;
-          } else {
-            return (id(zone2_dry)-x) / (id(zone2_dry)-id(zone2_wet)) * 100.0; 	// use a linear fit for any values in between
-          }
-  - platform: template
-    name: "Greenhouse Zone 2 Soil Saturation"
-    id: zone2saturation
-    unit_of_measurement: "%"
-    icon: "mdi:water-percent"
-    accuracy_decimals: 0
-    lambda: |-
-      return id(ads1115_2).state;
-  - platform: ads1115
-    multiplexer: 'A2_GND'
-    gain: 6.144
-    name: "ADS1115 Channel A2-GND"
-    id: ads1115_3
-    update_interval: never
-    internal: true        # Don't expose this sensor to HA, the template sensors will do that
-    # Dry 2.827 - taken from in the air, probably should do it directly in dry soil
-    # Wet 1.070 - taken from in a glass of water, probably should do it directly in saturated soil
-    filters:
-      - exponential_moving_average:
-          alpha: 0.1
-          send_every: 12
-      - lambda: |-
-          if (x > id(zone3_dry)) { 				// if over X volts, we are dry
-            return 0;
-          } else if (x < id(zone3_wet)) { 			// if under X volts, we are fully saturated
-            return 100;
-          } else {
-            return (id(zone3_dry)-x) / (id(zone3_dry)-id(zone3_wet)) * 100.0; 	// use a linear fit for any values in between
-          }
-  - platform: template
-    name: "Greenhouse Zone 3 Soil Saturation"
-    id: zone3saturation
-    unit_of_measurement: "%"
-    icon: "mdi:water-percent"
-    accuracy_decimals: 0
-    lambda: |-
-      return id(ads1115_3).state;
-  - platform: ads1115
-    multiplexer: 'A3_GND'
-    gain: 6.144
-    name: "ADS1115 Channel A3-GND"
-    id: ads1115_4
-    update_interval: never
-    internal: true        # Don't expose this sensor to HA, the template sensors will do that
-    # Dry 2.816 - taken from in the air, probably should do it directly in dry soil
-    # Wet 1.077 - taken from in a glass of water, probably should do it directly in saturated soil
-    filters:
-      - exponential_moving_average:
-          alpha: 0.1
-          send_every: 12
-      - lambda: |-
-          if (x > id(zone4_dry)) { 				// if over X volts, we are dry
-            return 0;
-          } else if (x < id(zone4_wet)) { 			// if under X volts, we are fully saturated
-            return 100;
-          } else {
-            return (id(zone4_dry)-x) / (id(zone4_dry)-id(zone4_wet)) * 100.0; 	// use a linear fit for any values in between
-          }
-  - platform: template
-    name: "Greenhouse Zone 4 Soil Saturation"
-    id: zone4saturation
-    unit_of_measurement: "%"
-    icon: "mdi:water-percent"
-    accuracy_decimals: 0
-    lambda: |-
-      return id(ads1115_4).state;
+  - platform: xiaomi_hhccjcy01
+    mac_address: 80:EA:CA:89:0E:A2
+    temperature:
+      name: "Greenhouse Zone 3 Temperature"
+    moisture:
+      name: "Greenhouse Zone 3 Moisture"
+    illuminance:
+      name: "Greenhouse Zone 3 Illuminance"
+    conductivity:
+      name: "Greenhouse Zone 3 Soil Conductivity"
+    battery_level:
+      name: "Greenhouse Zone 3 Battery Level"
 
 binary_sensor:
   - !include common/binary_sensor/status.yaml
-  - platform: gpio
+  #- platform: gpio
+  - platform: homeassistant
+    entity_id: binary_sensor.serre_raam_1
     id: window_1_state
-    pin:
-      number: GPIO16
-      mode: INPUT_PULLUP
+  #  pin:
+  #    number: GPIO16
+  #    mode: INPUT_PULLUP
     name: "Greenhouse Window 1"
-    filters:
-      - delayed_on: 100ms
+  #  filters:
+  #    - delayed_on: 100ms
     device_class: "window"
     internal: true
-  - platform: gpio
+  #- platform: gpio
+  - platform: homeassistant
+    entity_id: binary_sensor.serre_raam_2
     id: window_2_state
-    pin:
-      number: GPIO4
-      mode: INPUT_PULLUP
+  # pin:
+  #  number: GPIO4
+  #    mode: INPUT_PULLUP
     name: "Greenhouse Window 2"
-    filters:
-      - delayed_on: 100ms
+  #  filters:
+  #    - delayed_on: 500ms
     device_class: "window"
     internal: true
 
@@ -403,20 +241,3 @@ cover:
     stop_action:
       - switch.turn_off: mcp23017_pin_6
       - switch.turn_off: mcp23017_pin_7
-
-interval:
-  - interval: 1min
-    then:
-      - switch.turn_on: out_ads1115_4
-      - switch.turn_on: out_ads1115_3
-      - switch.turn_on: out_ads1115_2
-      - switch.turn_on: out_ads1115_1
-      - delay: 10s
-      - component.update: ads1115_4
-      - switch.turn_off: out_ads1115_4
-      - component.update: ads1115_3
-      - switch.turn_off: out_ads1115_3
-      - component.update: ads1115_2
-      - switch.turn_off: out_ads1115_2
-      - component.update: ads1115_1
-      - switch.turn_off: out_ads1115_1
