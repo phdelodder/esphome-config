@@ -119,15 +119,11 @@ jsonlint:
       fi
 
 markdownlint:
-  <<: *preflight
-  image:
-    name: ruby:alpine
-    entrypoint: [""]
-  before_script:
-    - gem install mdl
-    - mdl --version
+  <<<: *preflight
+  image: pipelinecomponents/markdownlint:latest
   script:
     - mdl --style all --warnings .
+  allow_failure: true
 
 # ESPHome test jobs
 esphome-latest:
