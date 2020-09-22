@@ -8,3 +8,4 @@
 **/src/
 **/platformio.ini
 **/partitions.csv
+secrets.yaml
