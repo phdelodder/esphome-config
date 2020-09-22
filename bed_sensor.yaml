@@ -1,0 +1,89 @@
+---
+substitutions:
+  device: bed_sensor
+  name: Bed Sensor
+  update_interval: 10min
+esphome:
+  name: ${device}
+  platform: ESP32
+  board: esp-wrover-kit
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  domain: !secret lan_domain
+  
+  ap:
+    ssid: "Bed Sensor"
+    password: "J7VriMtEqIPz"
+
+<<: !include common/api.yaml
+<<: !include common/ota.yaml
+<<: !include common/web_server.yaml
+<<: !include common/text_sensors.yaml
+<<: !include common/switch.yaml
+<<: !include common/sensor.yaml
+<<: !include common/logger.yaml
+
+# Setting up the pressure mats
+esp32_touch:
+# Delete this after you are done with the setup process
+   setup_mode: true
+# All the pressure mats
+# Change the pins to the pins you have used
+binary_sensor:
+   - !include common/binary_sensor/status.yaml
+   - platform: esp32_touch
+     name: "Top Right"
+     pin: GPIO14
+# See step 11
+     threshold: 5
+     id: top_right
+   - platform: esp32_touch
+     name: "Bottom Left"
+     pin: GPIO33
+# See step 11
+     threshold: 4
+     id: bottom_left
+   - platform: esp32_touch
+     name: "Top Left"
+     pin: GPIO15
+# See step 11
+     threshold: 4
+     id: top_left
+   - platform: esp32_touch
+     name: "Bottom Right"
+     pin: GPIO27
+# See step 11
+     threshold: 4
+     id: bottom_right
+# The main sensor that is created using the all the zones    
+   - platform: template
+     name: "Bed Sensor"
+     lambda: |-
+       if (id(top_right).state ||
+           id(top_left).state ||
+           id(bottom_right).state ||
+           id(bottom_left).state) {
+         return true;
+       } else {
+         return false;
+       }
+   - platform: template
+     name: "Left Side Bed Sensor"
+     lambda: |-
+       if (id(top_left).state ||
+           id(bottom_left).state) {
+         return true;
+       } else {
+         return false;
+       }
+   - platform: template
+     name: "Right Side Bed Sensor"
+     lambda: |-
+       if (id(top_right).state ||
+           id(bottom_right).state) {
+         return true;
+       } else {
+         return false;
+       }

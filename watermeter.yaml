@@ -1,0 +1,27 @@
+---
+substitutions:
+  device: watermeter
+  name: Watermeter
+  update_interval: 10min
+  
+esphome:
+  name: ${device}
+  platform: ESP8266
+  board: nodemcuv2
+
+<<: !include common/common.yaml
+<<: !include common/switch.yaml
+<<: !include common/logger.yaml
+<<: !include common/binary_sensor.yaml
+
+sensor:
+  - !include common/sensor/wifi-signal.yaml
+  - !include common/sensor/uptime.yaml
+  - platform: pulse_counter
+    name: "Flow rate"
+    pin: D5
+    update_interval: 60s
+    filters:
+      - lambda: return ((x+8)*10); #Flow pulse: F=(6*Q-8)±3% with Q=L/min
+    unit_of_measurement: "L/h" 
+    id: flow_rate_1

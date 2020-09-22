@@ -1,0 +1,37 @@
+---
+substitutions:
+  device: woonkamer
+  name: Woonkamer
+  alt_name: Living
+  update_interval: 10min
+
+esphome:
+  name: ${device}
+  platform: ESP8266
+  board: d1_mini
+  
+logger:
+
+<<: !include common/common.yaml
+<<: !include common/switch.yaml
+
+# status_led:
+#   pin: D4
+
+binary_sensor:
+  - !include common/binary_sensor/status.yaml
+  - platform: gpio
+    pin: D5
+    name: "Motion ${alt_name}"
+    device_class: motion
+
+sensor:
+  - !include common/sensor/wifi-signal.yaml
+  - !include common/sensor/uptime.yaml
+  - platform: adc
+    pin: A0
+    name: "Illuminance ${alt_name}"
+    unit_of_measurement: lux
+    filters:
+      - lambda: |-
+          return (x / 10000.0) * 2000000.0;
