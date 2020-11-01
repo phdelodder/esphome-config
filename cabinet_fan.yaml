@@ -35,9 +35,16 @@ output:
   - platform: esp8266_pwm
     pin: D1
     frequency: 25000 Hz
-    id: fanout
+    id: fanout_1
+  - platform: esp8266_pwm
+    pin: D3
+    frequency: 25000 Hz
+    id: fanout_2
 
 fan:
   - platform: speed
-    output: fanout
-    name: ${name}
+    output: fanout_1
+    name: ${name}_1
+  - platform: speed
+    output: fanout_2
+    name: ${name}_2
