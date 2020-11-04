@@ -30,6 +30,8 @@ sensor:
   - platform: dallas
     address: 0x8F02131211EFAA28
     name: "Cabinet Temperature"
+    filters:
+      - filter_out: nan
 
 output:
   - platform: esp8266_pwm
